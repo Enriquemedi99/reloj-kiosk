@@ -1,204 +1,185 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Reloj + Tiempo (Villarrubia de los Ojos)</title>
-  <style>
-    :root { color-scheme: dark; }
-    body{
-      margin:0; height:100vh; display:flex; align-items:center; justify-content:center;
-      background:#000; color:#fff; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      overflow:hidden;
-    }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reloj Kiosk XL</title>
 
-    /* Animación suave de entrada */
-    .wrap{
-      text-align:center;
-      padding:4vw;
-      animation: fadeIn 900ms ease-out both;
-      will-change: transform, opacity;
-    }
-    @keyframes fadeIn{
-      from { opacity:0; transform: translateY(10px); }
-      to   { opacity:1; transform: translateY(0); }
-    }
+<style>
+:root { color-scheme: dark; }
 
-    /* Movimiento ultra suave anti-quemado (se desplaza muy poco) */
-    .burnin-shift{
-      animation: burnShift 180s ease-in-out infinite;
-      will-change: transform;
-    }
-    @keyframes burnShift{
-      0%   { transform: translate(0,0); }
-      25%  { transform: translate(6px,-4px); }
-      50%  { transform: translate(-5px,5px); }
-      75%  { transform: translate(4px,6px); }
-      100% { transform: translate(0,0); }
-    }
+body{
+  margin:0;
+  height:100vh;
+  background:#000;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  overflow:hidden;
+}
 
-    /* Un “flotado” sutil del bloque del clima */
-    .card{
-      display:inline-block; text-align:left; border:1px solid rgba(255,255,255,.18);
-      border-radius: 22px; padding: 22px 24px; min-width: min(640px, 90vw);
-      background: rgba(255,255,255,.06);
-      backdrop-filter: blur(6px);
-      animation: floaty 10s ease-in-out infinite;
-      will-change: transform;
-    }
-    @keyframes floaty{
-      0%,100% { transform: translateY(0); }
-      50%     { transform: translateY(-3px); }
-    }
+/* contenedor general */
+.wrap{
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  animation: fadeIn 1s ease-out both;
+}
 
-    .city{
-      font-size: clamp(22px, 2.6vw, 34px);
-      opacity:.88; letter-spacing:.02em; margin-bottom: .25em;
-    }
-    .time{
-      font-size: clamp(84px, 12vw, 200px);
-      font-weight: 800; line-height: 1; margin:.10em 0 .05em;
-      letter-spacing: .02em;
-    }
-    .date{
-      font-size: clamp(22px, 2.8vw, 40px);
-      opacity:.85; margin-bottom: 1.0em;
-    }
+/* animación entrada */
+@keyframes fadeIn{
+  from { opacity:0; transform: translateY(20px); }
+  to { opacity:1; transform: translateY(0); }
+}
 
-    .row{ display:flex; gap:18px; flex-wrap:wrap; align-items:baseline; justify-content:space-between; }
-    .big{ font-size: clamp(34px, 4vw, 56px); font-weight: 800; }
-    .muted{ opacity:.82; font-size: clamp(18px, 2.2vw, 28px); }
-    .kv{
-      font-size: clamp(18px, 2.2vw, 26px);
-      margin-top: 14px; display:flex; gap:18px; flex-wrap:wrap;
-    }
-    .kv span{ white-space:nowrap; }
+/* movimiento anti quemado MUY leve */
+.shift{
+  animation: shift 240s ease-in-out infinite;
+}
+@keyframes shift{
+  0%{ transform:translate(0,0); }
+  25%{ transform:translate(8px,-6px); }
+  50%{ transform:translate(-8px,6px); }
+  75%{ transform:translate(6px,8px); }
+  100%{ transform:translate(0,0); }
+}
 
-    .footer{ margin-top: 12px; font-size: clamp(14px, 1.6vw, 18px); opacity:.6; }
-    .err{ color:#ffb4b4; }
-  </style>
+.city{
+  font-size: clamp(28px, 3.5vw, 48px);
+  opacity:.85;
+  margin-bottom: 10px;
+}
+
+.time{
+  font-size: clamp(140px, 22vw, 340px);
+  font-weight: 900;
+  line-height: 1;
+  margin: 0;
+}
+
+.date{
+  font-size: clamp(28px, 4vw, 56px);
+  opacity:.85;
+  margin-bottom: 40px;
+}
+
+/* tarjeta tiempo */
+.card{
+  width:90%;
+  max-width:1100px;
+  border-radius:30px;
+  padding:40px 50px;
+  background: rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.18);
+  backdrop-filter: blur(8px);
+  animation: floaty 12s ease-in-out infinite;
+}
+
+@keyframes floaty{
+  0%,100%{ transform: translateY(0); }
+  50%{ transform: translateY(-6px); }
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:30px;
+}
+
+.big{
+  font-size: clamp(56px, 6vw, 96px);
+  font-weight: 800;
+}
+
+.muted{
+  font-size: clamp(26px, 3vw, 42px);
+  opacity:.85;
+}
+
+.kv{
+  margin-top:30px;
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:30px;
+  font-size: clamp(24px, 2.8vw, 40px);
+}
+
+.footer{
+  margin-top:20px;
+  font-size: clamp(18px, 2vw, 28px);
+  opacity:.6;
+}
+</style>
 </head>
+
 <body>
-  <div class="wrap burnin-shift">
-    <div class="city">Villarrubia de los Ojos · España</div>
-    <div id="time" class="time">--:--</div>
-    <div id="date" class="date">--</div>
+<div class="wrap shift">
 
-    <div class="card">
-      <div class="row">
-        <div>
-          <div class="muted">Ahora</div>
-          <div id="temp" class="big">--°C</div>
-        </div>
-        <div style="text-align:right">
-          <div id="desc" class="muted">Cargando tiempo…</div>
-          <div id="today" class="muted">Máx --° / Mín --°</div>
-        </div>
+  <div class="city">Villarrubia de los Ojos · España</div>
+  <div id="time" class="time">--:--</div>
+  <div id="date" class="date">--</div>
+
+  <div class="card">
+    <div class="row">
+      <div>
+        <div class="muted">Ahora</div>
+        <div id="temp" class="big">--°C</div>
       </div>
-
-      <div class="kv">
-        <span id="wind">💨 Viento: -- km/h</span>
-        <span id="rain">🌧️ Lluvia: -- mm</span>
-        <span id="pop">☔ Prob. precip.: --%</span>
+      <div style="text-align:right">
+        <div id="desc" class="muted">Cargando tiempo…</div>
+        <div id="today" class="muted">Máx --° / Mín --°</div>
       </div>
-
-      <div id="status" class="footer">Actualizando…</div>
     </div>
+
+    <div class="kv">
+      <span id="wind">💨 Viento: -- km/h</span>
+      <span id="rain">🌧️ Lluvia: -- mm</span>
+      <span id="pop">☔ Prob. precip.: --%</span>
+    </div>
+
+    <div id="status" class="footer">Actualizando…</div>
   </div>
 
+</div>
+
 <script>
-  // --- Config ---
-  const LAT = 39.2181;     // Villarrubia de los Ojos (aprox.)
-  const LON = -3.6077;
-  const TZ  = "Europe/Madrid";
-  const CITY_LABEL = "Villarrubia de los Ojos";
+const LAT = 39.2181;
+const LON = -3.6077;
+const TZ  = "Europe/Madrid";
 
-  // Weather code mapping (Open-Meteo WMO)
-  const WMO_ES = {
-    0:"Despejado", 1:"Principalmente despejado", 2:"Parcialmente nublado", 3:"Nublado",
-    45:"Niebla", 48:"Cencellada",
-    51:"Llovizna ligera", 53:"Llovizna moderada", 55:"Llovizna intensa",
-    56:"Llovizna helada ligera", 57:"Llovizna helada intensa",
-    61:"Lluvia ligera", 63:"Lluvia moderada", 65:"Lluvia intensa",
-    66:"Lluvia helada ligera", 67:"Lluvia helada intensa",
-    71:"Nieve ligera", 73:"Nieve moderada", 75:"Nieve intensa", 77:"Granizo/nieve granulada",
-    80:"Chubascos ligeros", 81:"Chubascos moderados", 82:"Chubascos intensos",
-    85:"Chubascos de nieve ligeros", 86:"Chubascos de nieve intensos",
-    95:"Tormenta", 96:"Tormenta con granizo (ligero)", 99:"Tormenta con granizo (fuerte)"
-  };
+function tickClock(){
+  const now = new Date();
+  document.getElementById("time").textContent =
+    new Intl.DateTimeFormat("es-ES",{hour:"2-digit",minute:"2-digit",hour12:false,timeZone:TZ}).format(now);
 
-  // --- Clock ---
-  function tickClock(){
-    const now = new Date();
-    const timeFmt = new Intl.DateTimeFormat("es-ES", {
-      hour:"2-digit", minute:"2-digit", hour12:false, timeZone: TZ
-    }).format(now);
+  const d =
+    new Intl.DateTimeFormat("es-ES",{weekday:"long",day:"numeric",month:"long",year:"numeric",timeZone:TZ}).format(now);
+  document.getElementById("date").textContent = d.charAt(0).toUpperCase()+d.slice(1);
+}
+setInterval(tickClock,1000); tickClock();
 
-    const dateFmt = new Intl.DateTimeFormat("es-ES", {
-      weekday:"long", year:"numeric", month:"long", day:"numeric", timeZone: TZ
-    }).format(now);
-
-    document.getElementById("time").textContent = timeFmt;
-    const prettyDate = dateFmt.charAt(0).toUpperCase() + dateFmt.slice(1);
-    document.getElementById("date").textContent = prettyDate;
-  }
-  tickClock();
-  setInterval(tickClock, 1000);
-
-  // --- Weather ---
-  function fmt(n){ return (n ?? "--"); }
-  function setStatus(txt, isErr=false){
-    const el = document.getElementById("status");
-    el.textContent = txt;
-    el.className = "footer" + (isErr ? " err" : "");
-  }
-
-  async function loadWeather(){
-    try{
-      setStatus("Actualizando tiempo…");
-      const url =
-        "https://api.open-meteo.com/v1/forecast"
-        + `?latitude=${LAT}&longitude=${LON}`
-        + `&timezone=${encodeURIComponent(TZ)}`
-        + "&current=temperature_2m,weather_code,wind_speed_10m,precipitation"
-        + "&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max"
-        + "&forecast_days=1";
-
-      const r = await fetch(url, { cache: "no-store" });
-      if(!r.ok) throw new Error("HTTP " + r.status);
-      const data = await r.json();
-
-      const cur = data.current || {};
-      const daily = (data.daily || {});
-      const tmax = daily.temperature_2m_max?.[0];
-      const tmin = daily.temperature_2m_min?.[0];
-      const pop  = daily.precipitation_probability_max?.[0];
-
-      const temp = cur.temperature_2m;
-      const wind = cur.wind_speed_10m;
-      const rain = cur.precipitation;
-      const code = cur.weather_code;
-
-      document.getElementById("temp").textContent = `${fmt(temp)}°C`;
-      document.getElementById("wind").textContent = `💨 Viento: ${fmt(wind)} km/h`;
-      document.getElementById("rain").textContent = `🌧️ Lluvia: ${fmt(rain)} mm`;
-      document.getElementById("pop").textContent  = `☔ Prob. precip.: ${fmt(pop)}%`;
-
-      document.getElementById("desc").textContent = `${CITY_LABEL} · ${WMO_ES[code] ?? ("Código " + fmt(code))}`;
-      document.getElementById("today").textContent = `Máx ${fmt(tmax)}° / Mín ${fmt(tmin)}°`;
-
-      const updated = new Intl.DateTimeFormat("es-ES", {
-        hour:"2-digit", minute:"2-digit", hour12:false, timeZone: TZ
-      }).format(new Date());
-      setStatus(`Actualizado: ${updated}`);
-    }catch(e){
-      setStatus("No se pudo cargar el tiempo (revisar Wi-Fi).", true);
-      console.error(e);
-    }
-  }
-
-  loadWeather();
-  setInterval(loadWeather, 10 * 60 * 1000); // cada 10 min
+async function loadWeather(){
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&timezone=Europe/Madrid&current=temperature_2m,weather_code,wind_speed_10m,precipitation&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&forecast_days=1`;
+  const r = await fetch(url);
+  const d = await r.json();
+  document.getElementById("temp").textContent = d.current.temperature_2m+"°C";
+  document.getElementById("wind").textContent = "💨 Viento: "+d.current.wind_speed_10m+" km/h";
+  document.getElementById("rain").textContent = "🌧️ Lluvia: "+d.current.precipitation+" mm";
+  document.getElementById("pop").textContent = "☔ Prob. precip.: "+d.daily.precipitation_probability_max[0]+"%";
+  document.getElementById("today").textContent = "Máx "+d.daily.temperature_2m_max[0]+"° / Mín "+d.daily.temperature_2m_min[0]+"°";
+  document.getElementById("status").textContent = "Actualizado";
+}
+loadWeather();
+setInterval(loadWeather,600000);
 </script>
 </body>
 </html>

@@ -9,30 +9,77 @@
     body{
       margin:0; height:100vh; display:flex; align-items:center; justify-content:center;
       background:#000; color:#fff; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      overflow:hidden;
     }
-    .wrap{ text-align:center; padding:4vw; }
-    .city{ font-size: clamp(18px, 2.2vw, 28px); opacity:.85; letter-spacing:.02em; }
-    .time{ font-size: clamp(64px, 10vw, 160px); font-weight: 700; line-height: 1; margin:.15em 0 .05em; }
-    .date{ font-size: clamp(18px, 2.4vw, 34px); opacity:.85; margin-bottom: .9em; }
+
+    /* Animación suave de entrada */
+    .wrap{
+      text-align:center;
+      padding:4vw;
+      animation: fadeIn 900ms ease-out both;
+      will-change: transform, opacity;
+    }
+    @keyframes fadeIn{
+      from { opacity:0; transform: translateY(10px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+
+    /* Movimiento ultra suave anti-quemado (se desplaza muy poco) */
+    .burnin-shift{
+      animation: burnShift 180s ease-in-out infinite;
+      will-change: transform;
+    }
+    @keyframes burnShift{
+      0%   { transform: translate(0,0); }
+      25%  { transform: translate(6px,-4px); }
+      50%  { transform: translate(-5px,5px); }
+      75%  { transform: translate(4px,6px); }
+      100% { transform: translate(0,0); }
+    }
+
+    /* Un “flotado” sutil del bloque del clima */
     .card{
       display:inline-block; text-align:left; border:1px solid rgba(255,255,255,.18);
-      border-radius: 18px; padding: 18px 20px; min-width: min(560px, 88vw);
+      border-radius: 22px; padding: 22px 24px; min-width: min(640px, 90vw);
       background: rgba(255,255,255,.06);
       backdrop-filter: blur(6px);
+      animation: floaty 10s ease-in-out infinite;
+      will-change: transform;
     }
-    .row{ display:flex; gap:16px; flex-wrap:wrap; align-items:baseline; justify-content:space-between; }
-    .big{
-      font-size: clamp(24px, 3.2vw, 44px); font-weight: 700;
+    @keyframes floaty{
+      0%,100% { transform: translateY(0); }
+      50%     { transform: translateY(-3px); }
     }
-    .muted{ opacity:.8; }
-    .kv{ font-size: clamp(16px, 2vw, 22px); margin-top: 10px; display:flex; gap:18px; flex-wrap:wrap; }
+
+    .city{
+      font-size: clamp(22px, 2.6vw, 34px);
+      opacity:.88; letter-spacing:.02em; margin-bottom: .25em;
+    }
+    .time{
+      font-size: clamp(84px, 12vw, 200px);
+      font-weight: 800; line-height: 1; margin:.10em 0 .05em;
+      letter-spacing: .02em;
+    }
+    .date{
+      font-size: clamp(22px, 2.8vw, 40px);
+      opacity:.85; margin-bottom: 1.0em;
+    }
+
+    .row{ display:flex; gap:18px; flex-wrap:wrap; align-items:baseline; justify-content:space-between; }
+    .big{ font-size: clamp(34px, 4vw, 56px); font-weight: 800; }
+    .muted{ opacity:.82; font-size: clamp(18px, 2.2vw, 28px); }
+    .kv{
+      font-size: clamp(18px, 2.2vw, 26px);
+      margin-top: 14px; display:flex; gap:18px; flex-wrap:wrap;
+    }
     .kv span{ white-space:nowrap; }
-    .footer{ margin-top: 10px; font-size: 14px; opacity:.6; }
+
+    .footer{ margin-top: 12px; font-size: clamp(14px, 1.6vw, 18px); opacity:.6; }
     .err{ color:#ffb4b4; }
   </style>
 </head>
 <body>
-  <div class="wrap">
+  <div class="wrap burnin-shift">
     <div class="city">Villarrubia de los Ojos · España</div>
     <div id="time" class="time">--:--</div>
     <div id="date" class="date">--</div>
@@ -68,34 +115,16 @@
 
   // Weather code mapping (Open-Meteo WMO)
   const WMO_ES = {
-    0:"Despejado",
-    1:"Principalmente despejado",
-    2:"Parcialmente nublado",
-    3:"Nublado",
-    45:"Niebla",
-    48:"Cencellada",
-    51:"Llovizna ligera",
-    53:"Llovizna moderada",
-    55:"Llovizna intensa",
-    56:"Llovizna helada ligera",
-    57:"Llovizna helada intensa",
-    61:"Lluvia ligera",
-    63:"Lluvia moderada",
-    65:"Lluvia intensa",
-    66:"Lluvia helada ligera",
-    67:"Lluvia helada intensa",
-    71:"Nieve ligera",
-    73:"Nieve moderada",
-    75:"Nieve intensa",
-    77:"Granizo/nieve granulada",
-    80:"Chubascos ligeros",
-    81:"Chubascos moderados",
-    82:"Chubascos intensos",
-    85:"Chubascos de nieve ligeros",
-    86:"Chubascos de nieve intensos",
-    95:"Tormenta",
-    96:"Tormenta con granizo (ligero)",
-    99:"Tormenta con granizo (fuerte)"
+    0:"Despejado", 1:"Principalmente despejado", 2:"Parcialmente nublado", 3:"Nublado",
+    45:"Niebla", 48:"Cencellada",
+    51:"Llovizna ligera", 53:"Llovizna moderada", 55:"Llovizna intensa",
+    56:"Llovizna helada ligera", 57:"Llovizna helada intensa",
+    61:"Lluvia ligera", 63:"Lluvia moderada", 65:"Lluvia intensa",
+    66:"Lluvia helada ligera", 67:"Lluvia helada intensa",
+    71:"Nieve ligera", 73:"Nieve moderada", 75:"Nieve intensa", 77:"Granizo/nieve granulada",
+    80:"Chubascos ligeros", 81:"Chubascos moderados", 82:"Chubascos intensos",
+    85:"Chubascos de nieve ligeros", 86:"Chubascos de nieve intensos",
+    95:"Tormenta", 96:"Tormenta con granizo (ligero)", 99:"Tormenta con granizo (fuerte)"
   };
 
   // --- Clock ---
@@ -104,12 +133,14 @@
     const timeFmt = new Intl.DateTimeFormat("es-ES", {
       hour:"2-digit", minute:"2-digit", hour12:false, timeZone: TZ
     }).format(now);
+
     const dateFmt = new Intl.DateTimeFormat("es-ES", {
       weekday:"long", year:"numeric", month:"long", day:"numeric", timeZone: TZ
     }).format(now);
 
     document.getElementById("time").textContent = timeFmt;
-    document.getElementById("date").textContent = dateFmt.charAt(0).toUpperCase() + dateFmt.slice(1);
+    const prettyDate = dateFmt.charAt(0).toUpperCase() + dateFmt.slice(1);
+    document.getElementById("date").textContent = prettyDate;
   }
   tickClock();
   setInterval(tickClock, 1000);
@@ -167,8 +198,7 @@
   }
 
   loadWeather();
-  // refresca cada 10 minutos
-  setInterval(loadWeather, 10 * 60 * 1000);
+  setInterval(loadWeather, 10 * 60 * 1000); // cada 10 min
 </script>
 </body>
 </html>
